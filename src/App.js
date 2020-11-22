@@ -1,124 +1,63 @@
 import { useEffect, useState } from "react";
+
+import "./App.scss";
 import { transactions } from "./data";
 
 function App() {
-  const [totalSpent, setTotalSpent] = useState(0);
   const [expenses, setExpenses] = useState([]);
-
-  useEffect(() => {
-    const getTotalSpent = () => {
-      const totalSpent = transactions
-        .filter((transaction) => transaction.amount < 0)
-        .reduce((accumulator, currentValue) => {
-          return { amount: accumulator.amount + currentValue.amount };
-        });
-      setTotalSpent(Math.floor(totalSpent.amount * -1));
-    };
-    getTotalSpent();
-  }, []);
+  const [totalSpent, setTotalSpent] = useState(0);
+  const [topMerchant, setTopMerchant] = useState("");
 
   useEffect(() => {
     const getExpenses = () => {
       const expenses = transactions
         .filter((transaction) => transaction.amount < 0)
         .map((transaction) => ({
+          id: transaction.id,
+          amount: Math.floor(transaction.amount),
           name: transaction.description,
-          amount: transaction.amount,
         }))
+        .sort(
+          (firstExpense, secondExpense) =>
+            firstExpense.amount - secondExpense.amount
+        );
       setExpenses(expenses);
+      setTopMerchant(expenses[0].name);
     };
     getExpenses();
   }, []);
 
+  useEffect(() => {
+    const getTotalSpent = () => {
+      const totalSpent = expenses
+        .filter((expense) => expense.name === topMerchant)
+        .reduce((accumulator, currentValue) => ({
+          amount: accumulator.amount + currentValue.amount,
+        }));
+      const formattedTotalSpent = Math.floor(
+        totalSpent.amount * -1
+      ).toLocaleString();
+      setTotalSpent(formattedTotalSpent);
+    };
+    expenses.length > 0 && getTotalSpent();
+  }, [expenses, topMerchant]);
+
   return (
-    <div
-      style={{
-        margin: "auto",
-        display: "flex",
-        maxWidth: "300px",
-        borderRadius: "29px",
-        flexDirection: "column",
-        justifyContent: "center",
-        border: "2px dashed lightgray",
-      }}
-    >
-      <p
-        style={{
-          fontSize: "15px",
-          textAlign: "center",
-          color: "darkslategray",
-          fontFamily: "sans-serif",
-        }}
-      >
-        Your favorite merchant
+    <div className="card">
+      <p className="card-header">Your favorite merchant</p>
+      <img className="card-img" alt="apple" src="apple.png" />
+      <p className="card-content">{`${totalSpent} kr`}</p>
+      <p className="card-footer">
+        {`During 2020 you have spent ${totalSpent} kr with ${topMerchant}`}
       </p>
-      <img
-        alt="amazon"
-        src="amazon.png"
-        style={{
-          margin: "auto",
-          width: "100px",
-          height: "100px",
-        }}
-      />
-      <p
-        style={{
-          fontSize: "20px",
-          fontWeight: "bold",
-          textAlign: "center",
-          color: "darkslategray",
-          fontFamily: "sans-serif",
-        }}
-      >
-        {`${totalSpent} kr`}
-      </p>
-      <p
-        style={{
-          fontSize: "10px",
-          textAlign: "center",
-          color: "darkslategray",
-          fontFamily: "sans-serif",
-        }}
-      >
-        {`During 2020 you have spent ${totalSpent} kr with Amazon`}
-      </p>
-      <p
-        style={{
-          fontSize: "15px",
-          textAlign: "center",
-          color: "darkslategray",
-          fontFamily: "sans-serif",
-        }}
-      >
-        Your other expenses
-      </p>
-      <ul
-        style={{
-          margin: "unset",
-          padding: "unset",
-          maxHeight: "300px",
-          overflowY: "scroll",
-          listStyleType: "none",
-        }}
-      >
+      <hr className="card-divider" />
+      <p className="card-header">Top ranking expenses</p>
+      <hr className="card-divider" />
+      <ul className="card-list">
         {expenses.map((expense) => (
-          <li>
-            <hr
-              style={{
-                width: "80%",
-                borderTop: "1px dotted lightgray",
-              }}
-            />
-            <p
-              style={{
-                fontSize: "10px",
-                textAlign: "center",
-                color: "darkslategray",
-                fontFamily: "sans-serif",
-              }}
-            >
-              {`${expense.name} ${expense.amount} kr`}
-            </p>
+          <li className="card-list-item" key={expense.id}>
+            <p className="card-list-item-text">{expense.name}</p>
+            <p className="card-list-item-text">{`${expense.amount.toLocaleString()} kr`}</p>
           </li>
         ))}
       </ul>

@@ -1,0 +1,60 @@
+$lightgray: lightgray;
+$darkgray: darkslategray;
+
+.card {
+  margin: auto;
+  display: flex;
+  max-width: 300px;
+  text-align: center;
+  border-radius: 29px;
+  color: $darkgray;
+  flex-direction: column;
+  justify-content: center;
+  font-family: "Bellota Text";
+  border: 2px dashed $lightgray;
+  padding: 20px;
+  &-header {
+    font-size: 15px;
+    font-weight: bold;
+  }
+  &-divider {
+    width: 80%;
+    border-top: 1px dashed $lightgray;
+  }
+  &-img {
+    margin: 10px auto;
+    width: 100px;
+    height: 100px;
+  }
+  &-content {
+    font-size: 30px;
+    margin: 15px 0px;
+    font-weight: bold;
+  }
+  &-footer {
+    font-size: 10px;
+    margin-top: 0px;
+  }
+  &-list {
+    display: flex;
+    padding: unset;
+    margin-top: 0px;
+    max-height: 300px;
+    overflow-y: scroll;
+    align-items: center;
+    margin-bottom: 20px;
+    list-style-type: none;
+    flex-direction: column;
+    &-item {
+      width: 80%;
+      display: flex;
+      justify-content: space-between;
+      &-text {
+        font-size: 15px;
+      }
+    }
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+}
